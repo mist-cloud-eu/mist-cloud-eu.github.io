@@ -35,15 +35,16 @@ Currently, all administrative tasks in mist-cloud are performed through a comman
 
 <details>
 <summary>NB: if you get the following error:</summary>
-    
-```
-mist : File C:\Users\Christian Clausen\AppData\Roaming\npm\mist.ps1 
-cannot be loaded because running scripts is disabled on this system. 
-For more information, see about_Execution_Policies at 
-https:/go.microsoft.com/fwlink/?LinkID=135170.
-```
 
-You need to configure the execution policy for your system, see: https:/go.microsoft.com/fwlink/?LinkID=135170
+  ```bash
+  mist : File C:\Users\Christian Clausen\AppData\Roaming\npm\mist.ps1 
+  cannot be loaded because running scripts is disabled on this system. 
+  For more information, see about_Execution_Policies at 
+  https:/go.microsoft.com/fwlink/?LinkID=135170.
+  ```
+
+  You need to configure the execution policy for your system, see: https:/go.microsoft.com/fwlink/?LinkID=135170
+
 </details>
 
 ## Install Git
@@ -59,9 +60,7 @@ You need to configure the execution policy for your system, see: https:/go.micro
    > ```
 
 
-<aside>
-⚠️ Because mist-cli interacts with Git, all mist-commands must be run in a terminal that can execute `git` commands. For windows users we recommend Git Bash.
-</aside>
+> ⚠️ Because mist-cli interacts with Git, all mist-commands must be run in a terminal that can execute `git` commands. For windows users we recommend Git Bash.
 
 ## Set up SSH
 
@@ -157,9 +156,7 @@ For this example we implement a system with 4 parts:
 3. Service B listens for `hola` events and also posts an `intermediate` event.
 4. Service C listens for `intermediate` events and posts a `reply` event.
 
-<aside>
-💡 We have made up the `hello`, `hola`, and `intermediate` events for this example, but the `reply` event has special meaning in mist-cloud. `reply` is the only reserved event type.
-</aside>
+> 💡 We have made up the `hello`, `hola`, and `intermediate` events for this example, but the `reply` event has special meaning in mist-cloud. `reply` is the only reserved event type.
 
 For simplicity services A, B, and C are in the same service repository. You can download the source code in your favorite programming language here:
 
@@ -308,7 +305,7 @@ Whatever we put after the last  `/` is the event type, and what we put after the
 
 </details>
 
-## Overview of the system
+# Overview of the system
 
 There a lot of stuff happening when we trigger the system. So let's go through it in detail. To make it more simple we have segmented it when each event enters the Rapids. Unless otherwise stated the simulator and cloud function identically.
 
@@ -327,7 +324,9 @@ There a lot of stuff happening when we trigger the system. So let's go through i
      ...
    }
    ```
+
 ----
+
 4. From the Rapids each relevant River makes a copy, in this case only the `english-river`.
 2. Each River passes the event to _one_ service which subscribes to it with a hook in `mist.json`.
    ```json
@@ -342,7 +341,9 @@ There a lot of stuff happening when we trigger the system. So let's go through i
 4. It runs the appropriate code, which posts a new event to the Rapids (ie. `intermediate`). Then the service shuts down.
 
    Notice that no security check is performed here. Services post events directly to the Rapids.
+
 ----
+
 8. This event is again copied from the Rapids onto each relevant River, in this case only the `common-river`.
 2. Each River passes the event to _one_ service which subscribes to it with a hook in `mist.json`.
    ```json
@@ -355,7 +356,9 @@ There a lot of stuff happening when we trigger the system. So let's go through i
    ```
 3.  The service is launched with the action mapped in `mist.json` (ie. `intermediate-action`). 
 4.  It runs the appropriate code, which posts a special event to the Rapids (ie. `reply`). Then the service shuts down.
+
 -----
+
 12.  mist-cloud adds the reply-payload to a bundle to be sent back to the client.
 2.  Once either the wait time expires or the reply count is reached mist-cloud sends the complete bundle. In this case, since the reply count is 1 it is sent back immediately.
 
@@ -366,7 +369,9 @@ First-time setup (only once):
 1. We installed some tools including the mist-cli.
 2. We created a user, with `mist login [email]`
 3. We created an organization, with `mist org [name]`
+
 ----
+
 Security configuration (rare):
 
 4. We configured the api in the `event-catalogue/api.json`.
@@ -374,7 +379,9 @@ Security configuration (rare):
 3. [Only cloud] We deployed the event-catalogue, with `mist deploy`
 4. [Only cloud] We created an API key, with `mist key [duration]`
 5. [Only cloud] We allowed the event though the API key, with `mist event [event] --key [key]`
+
 ----
+
 Implementing code (common):
 
 9. We created a new service, with `mist service [name]`
