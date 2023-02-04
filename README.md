@@ -1,5 +1,21 @@
 #  mist-cloud Quickstart
 
+> This tutorial covers:
+> 
+> * Getting set up the first time.
+> * Implementing a simple little system with three services.
+> * Hooking the services up to the event system.
+> * Testing the system locally.
+> * Deploying and securing everything in mist-cloud.
+
+This tutorial is intented to quickly get you set up and ready to play around with mist-cloud, locally or in the cloud. It does not cover any of the nitty-gritty details, corner cases, or design choices.
+
+Before we dive in, let's first look at the basic model of how the mist-cloud platform works with your software briefly. You write some code, then push it via Git to mist-cloud, where it is packaged and deployed onto our servers (yellow path). When end users, IoT devices, or other external clients make a request to mist-cloud the code is executed (blue path). Optionally your code can send replies back (green path), like in a server-client setup.
+
+![Overview of how mist-cloud works](mist-cloud.png)
+
+# Install the necessary tools
+
 Currently, all administrative tasks in mist-cloud are performed through a command-line interface (CLI). We use NodeJS’s Package Manager to install the mist-CLI, so we first need to install the package manager. All code is managed with Git, which we also need to install. 
 
 ## Install NodeJS
@@ -398,3 +414,9 @@ That's it. You're all set to start playing around on your own. Some interesting 
 * Adding intermediate to the event-catalogue, what happens if we call it directly? Locally and on cloud?
 * Removing hello from the event-catalogue, can we still trigger it? Locally and on cloud?
 * Can we post multiple events from one service?
+
+And just a reminder, if you have not done so already you should sign up for early access with the command:
+
+```bash
+mist sign-up-for-early-access [danish cvr number]
+```
