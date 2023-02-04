@@ -6,9 +6,14 @@ Currently, all administrative tasks in mist-cloud are performed through a comman
 
 1. Go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the LTS version.
 2. Go through the installer.
-3. Verify the installation by opening PowerShell (or another terminal) and running the command `npm --version`:
+3. Verify the installation by opening PowerShell (or another terminal) and running the command: 
+   ```bash
+   npm --version
+   ```
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/a747e520-cd5a-4346-8681-77f2b9b48b1b/Untitled.png)
+   > ```bash
+   > 8.18.0
+   > ```
 
 ## Install mist-CLI
 
@@ -20,9 +25,13 @@ Currently, all administrative tasks in mist-cloud are performed through a comman
     
     This command uses NodeJS’s Package Manager (`npm`) to `install` the mist-CLI, globally (`g`), i.e. accessible from any folder on the computer.
     
-2. Verify the installation by running the command `mist`
-
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3e96d4e9-cd16-49b3-a700-8f152708617c/Untitled.png)
+2. Verify the installation by running the command: 
+   ```bash
+   mist version
+   ```
+   > ```bash
+   > 1.4.1
+   > ```
 
 <details>
 <summary>NB: if you get the following error:</summary>
@@ -41,10 +50,17 @@ You need to configure the execution policy for your system, see: https:/go.micro
 
 1. Go to [https://git-scm.com/downloads](https://git-scm.com/downloads), and download the installer.
 2. Go through the installer.
-3. Verify the installation by opening *git bash* and running the command `git --version`
+3. Verify the installation by opening *git bash* and running the command: 
+   ```bash
+   git --version
+   ```
+   > ```bash
+   > git version 2.37.3.windows.1
+   > ```
+
 
 <aside>
-⚠️ Because mist-cli interacts with Git, all mist-commands must be run in a terminal that can execute `git` commands. We recommend git bash.
+⚠️ Because mist-cli interacts with Git, all mist-commands must be run in a terminal that can execute `git` commands. For windows users we recommend Git Bash.
 </aside>
 
 ## Set up SSH
@@ -59,11 +75,13 @@ To verify the connection we need to set up a new user account.
 
 # Create a user
 
-From here, if at any point you get lost try running the command:
+From here, if at any point you get lost or stuck try running the command:
+
 ```bash
 mist help
 ```
-It usually has good suggestions for next steps at the bottom.
+
+It usually has good suggestions for next steps at the bottom of its output.
 
 We use the mist-CLI to set up a new user account. During this process, we are guided through creating an RSA key pair and adding the public key to our mist user account. 
 
@@ -365,7 +383,11 @@ Implementing code (common):
 4. We built the service locally, with `mist build`
 5. We tested the system locally, with `mist run`
 6. [Only cloud] We deployed the service, with `mist deploy`
-----
 
+That's it. You're all set to start playing around on your own. Some interesting questions to explore in no particular order:
 
-
+* Can we split the service into two or even three repos?
+* Implement a new service that also listens for `english-river/hello` but replies directly. What if we use a different river? What if we increase the reply count for hello?
+* Adding intermediate to the event-catalogue, what happens if we call it directly? Locally and on cloud?
+* Removing hello from the event-catalogue, can we still trigger it? Locally and on cloud?
+* Can we post multiple events from one service?
