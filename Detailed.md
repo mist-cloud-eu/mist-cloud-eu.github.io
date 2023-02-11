@@ -1,4 +1,4 @@
-#  mist-cloud Quickstart
+#  mist-cloud -- Infraless compute cloud
 
 ## Mental model: Rapids-rivers
 ### The problem with monoliths

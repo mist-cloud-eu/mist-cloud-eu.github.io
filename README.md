@@ -8,9 +8,9 @@
 > * Testing the system locally.
 > * Deploying and securing everything in mist-cloud.
 
-This tutorial is intented to quickly get you set up and ready to play around with mist-cloud, locally or in the cloud. It does not cover any of the nitty-gritty details, corner cases, or design choices.
+This tutorial is intended to quickly get you set up and ready to play around with mist-cloud, locally or in the cloud. It does not cover any of the nitty-gritty details, corner cases, or design choices.
 
-Before we dive in, let's first look at the basic model of how the mist-cloud platform works with your software briefly. You write some code, then push it via Git to mist-cloud, where it is packaged and deployed onto our servers (yellow path). When end users, IoT devices, or other external clients make a request to mist-cloud the code is executed (blue path). Optionally your code can send replies back (green path), like in a server-client setup.
+Before we dive in, let's first look at the basic model of how the mist-cloud platform works with your software briefly. You write some code, then push it via Git to mist-cloud, where it is packaged and deployed onto our servers (yellow path). When end users, IoT devices, or other external clients sends a request to mist-cloud the code is executed (blue path). Optionally your code can send replies back (green path), like in a server-client setup.
 
 ![Overview of how mist-cloud works](mist-cloud.png)
 
@@ -96,7 +96,7 @@ From here, if at any point you get lost or stuck try running the command:
 mist help
 ```
 
-It usually has good suggestions for next steps at the bottom of its output.
+It usually has good suggestions for the next steps at the bottom of its output.
 
 We use the mist-CLI to set up a new user account. During this process, we are guided through creating an RSA key pair and adding the public key to our mist user account. 
 
@@ -178,12 +178,29 @@ For simplicity services A, B, and C are in the same service repository. You can 
 
 * Typescript
   ```
-  git pull ...
+  git pull https://github.com/mist-cloud-eu/ts-template
   ```
 * Javascript
-* Typescript
+  ```
+  git pull https://github.com/mist-cloud-eu/js-template
+  ```
+* Go (coming soon)
+  ```
+  git pull https://github.com/mist-cloud-eu/go-template
+  ```
 
-Finally build the service with the command:
+Because we have mixed two git histories we also have to run:
+
+```bash
+git pull --rebase
+```
+
+The service templates share similar structure:
+* The file `rapids` define a nice interface for posting to the rapids.
+* Then we have three business logic files, corresponding to each service described above; `english`, `spanish`, `interm`.
+* The `app` file maps actions to code and parses the envelope's payload then calls the appropriate business logic.
+
+Finally, build the service with the command:
 
 ```bash
 mist build
@@ -191,7 +208,7 @@ mist build
 
 # Subscribe to events
 
-The mist.json file maps river/event combinations to actions, which are defined in code. These services are already set up to listen for the relevant events in mist.json.
+The mist.json file maps river/event combinations to actions, which are defined in code. We have three services in this repo so our mist.json should have a hook for each, mapping to the appropriate action.
 
 ```json
 {
@@ -203,7 +220,7 @@ The mist.json file maps river/event combinations to actions, which are defined i
 }
 ```
 
-Because all the events are different (`hello`, `hola`, `intermediate`) the rivers have no effect here. Rivers only come into play if multiple services want to handle the same event.
+Since all the events are different (`hello`, `hola`, `intermediate`) the rivers have no effect here. Rivers only come into play if multiple services want to handle the same event.
 
 <details>
 <summary>If you have early access</summary>
@@ -214,7 +231,7 @@ Before we can deploy the service we have to have permission to `write_source_cod
 mist role Developer --user [email]
 ```
 
-Or alternatively adding `write_source_code` capability to the Administrator role with the command:
+Alternatively, add `write_source_code` capability to the Administrator role with the command:
 
 ```bash
 mist capability write_source_code --role Administrator
@@ -231,13 +248,13 @@ When we deploy a service, mist-cloud automatically creates Rivers if necessary a
 
 # Configure the API
 
-By default everything in mist-cloud is protected, and inaccessible to the outside. So in order to allow part 1 from above:
+By default, everything in mist-cloud is protected, and inaccessible to the outside. So in order to allow part 1 from above:
 
 > 1. A client posts either a `hello` or `hola` event containing a name in JSON format as its _payload_.
 
 We first have to _expose_ the `hello` and `hola` events. 
 
-We do this by registering them in the event catalogie. That is, in the `api.json` file in the `event-catalogue` folder of an organization. 
+We do this by registering them in the event catalogue. That is, in the `api.json` file in the `event-catalogue` folder of an organization. 
 
 ```json
 {
@@ -288,8 +305,7 @@ While the simulator is running, we can trigger our service by opening a second t
 
 ```bash
 curl --silent -X POST \
-     -H "Content-Type: application/json" \
-     -d '{ "name": "[your name]" }' \
+     -d "[Your name]" \
      http://localhost:3000/rapids/hello
 ```
 
@@ -302,18 +318,16 @@ We can trigger our service with curl:
 
 ```bash
 curl --silent -X POST \
-     -H "Content-Type: application/json" \
-     -d '{ "name": "[your name]" }' \
+     -d "[Your name]" \
      https://rapids.mist-cloud.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/hello
 ```
 
-Or alternatively, specify the key as a header:
+Alternatively, specify the key as a header:
 
 ```bash
 curl --silent -X POST \
-     -H "Content-Type: application/json" \
      -H "mist-key: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" \
-     -d '{ "name": "[your name]" }' \
+     -d "[Your name]" \
      https://rapids.mist-cloud.io/hello
 ```
 
@@ -323,13 +337,12 @@ Whatever we put after the last  `/` is the event type, and what we put after the
 
 # Overview of the system
 
-There a lot of stuff happening when we trigger the system. So let's go through it in detail. To make it more simple we have segmented it when each event enters the Rapids. Unless otherwise stated the simulator and cloud function identically.
+There is a lot of stuff happening when we trigger the system. So let's go through it in detail. To make it simpler we have segmented it when each event enters the Rapids. Unless otherwise stated the simulator and cloud function identically.
 
-1. The client makes an HTTP `POST` request to mist-cloud with an API key (ie. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`), an event (ie. `hello`), and a payload (ie. ` { "name": "John Smith" } `).
+1. The client makes an HTTP `POST` request to mist-cloud with an API key (ie. `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`), an event (ie. `hello`), and a payload (ie. `"John Smith"`).
    ```bash
    curl --silent -X POST \
-       -H "Content-Type: application/json" \
-       -d '{ "name": "[your name]" }' \
+       -d "John Smith" \
        https://rapids.mist-cloud.io/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/hello
    ```
 2. [Only cloud] mist-cloud verifies that this event is allowed on this key, which it is in this case.
@@ -343,7 +356,7 @@ There a lot of stuff happening when we trigger the system. So let's go through i
 
 ----
 
-4. From the Rapids each relevant River makes a copy, in this case only the `english-river`.
+4. From the Rapids, each relevant River makes a copy, in this case only the `english-river`.
 2. Each River passes the event to _one_ service which subscribes to it with a hook in `mist.json`.
    ```json
    {
@@ -378,7 +391,7 @@ There a lot of stuff happening when we trigger the system. So let's go through i
 12.  mist-cloud adds the reply-payload to a bundle to be sent back to the client.
 2.  Once either the wait time expires or the reply count is reached mist-cloud sends the complete bundle. In this case, since the reply count is 1 it is sent back immediately.
 
-It took a bit of work to set up this system, because it involved first-time setup which only happens once, and security configuration which rarely changes after it is set up.
+It took a bit of work to set up this system because it involved first-time setup which only happens once and security configuration which rarely changes after it is set up.
 
 First-time setup (only once):
 
@@ -390,7 +403,7 @@ First-time setup (only once):
 
 Security configuration (rare):
 
-4. We configured the api in the `event-catalogue/api.json`.
+4. We configured the API in the `event-catalogue/api.json`.
 2. [Only cloud] We gave ourselves permissions to deploy code, with `mist role Developer --user [email]`
 3. [Only cloud] We deployed the event-catalogue, with `mist deploy`
 4. [Only cloud] We created an API key, with `mist key [duration]`
@@ -409,6 +422,7 @@ Implementing code (common):
 
 That's it. You're all set to start playing around on your own. Some interesting questions to explore in no particular order:
 
+* How would you add another greeting or language?
 * Can we split the service into two or even three repos?
 * Implement a new service that also listens for `english-river/hello` but replies directly. What if we use a different river? What if we increase the reply count for hello?
 * Adding intermediate to the event-catalogue, what happens if we call it directly? Locally and on cloud?
