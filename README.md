@@ -244,6 +244,18 @@ mist deploy
 ```
 
 When we deploy a service, mist-cloud automatically creates Rivers if necessary and sets up all the relevant subscriptions.
+
+We can check the status of the smoke test with the command:
+
+```
+mist queue 3
+```
+
+And even inspect the event in detail, including its output with the command:
+
+```
+mist inspect [message id] --river init
+```
 </details>
 
 # Configure the API
@@ -333,6 +345,17 @@ curl --silent -X POST \
 
 Whatever we put after the last  `/` is the event type, and what we put after the `-d` argument is the event's payload.
 
+Again, we can check the status of each event with the command:
+
+```
+mist queue 3
+```
+
+And inspect a specific event in detail, including the services' output with the command:
+
+```
+mist inspect [message id] --river [river]
+```
 </details>
 
 # Overview of the system
