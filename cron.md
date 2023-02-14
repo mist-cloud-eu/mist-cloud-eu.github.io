@@ -2,7 +2,7 @@
 
 In order to run code at fixed intervals in mist-cloud we can use _cron jobs_. A mist cron job is a mechanism that can be configured to post custom events to the rapids at fixed times. For example, every 5 minutes (`*/5 * * * *`), or the last weekday of every month (`0 0 L * *`).
 
-Our syntax of cron has 5-6 elements:
+Although the complete syntax of cron expressions is out of the scope of this tutorial, our syntax of cron has 5-6 elements:
 * Seconds (optional)
 * Minutes
 * Hours
@@ -10,7 +10,13 @@ Our syntax of cron has 5-6 elements:
 * Month, where 1 is January
 * Day of week, where 1 is Monday
 
-To set up a cron job simply use the command:
+Example cron expressions:
+* Every 5 minutes: `*/5 * * * *`
+* At midnight the last weekday of every month: `0 0 L * *`
+* Noon Monday through Friday: `0 12 * * 1-5`
+* 8pm on the 3rd and 23rd of every month: `0 20 3,23 * *`
+
+To set up a cron job in mist-cloud simply use the command:
 
 ```
 mist cron [name] --expr "[cron expression]" --event [event to post]
