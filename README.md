@@ -457,3 +457,7 @@ And just a reminder, if you have not done so already you should sign up for earl
 ```bash
 mist sign-up-for-early-access [danish cvr number]
 ```
+
+More to explore:
+
+* [Timing triggers and cron jobs](cron.md)
