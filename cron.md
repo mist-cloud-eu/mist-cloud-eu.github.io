@@ -22,6 +22,14 @@ To set up a cron job in mist-cloud simply use the command:
 mist cron [name] --expr "[cron expression]" --event [event to post]
 ```
 
+Using the 5 minute expression from above it cloud look like this:
+
+```
+mist cron hello --expr "*/5 * * * *"
+```
+
+Meaning, create a cron job called `hello`, that posts `hello` every 5 minutes.
+
 > ⚠ Things to note:
 > * If event is omitted the name is used. 
 > * A cron event is posted without payload, and replies have no effect. 

@@ -8,28 +8,15 @@
 > * Testing the system locally.
 > * Deploying and securing everything in mist-cloud.
 
-This tutorial is intended to quickly get you set up and ready to play around with mist-cloud, locally or in the cloud. It does not cover any of the nitty-gritty details, corner cases, or design choices.
+This tutorial is intended to quickly get you set up and ready to play around with mist-cloud, locally and in the cloud.
 
-Before we dive in, let's first look at the basic model of how the mist-cloud platform works with your software briefly. You write some code, then push it via Git to mist-cloud, where it is packaged and deployed onto our servers (yellow path). When end users, IoT devices, or other external clients sends a request to mist-cloud the code is executed (blue path). Optionally your code can send replies back (green path), like in a server-client setup.
+Before we dive in, let's briefly look at the basic model of how the mist-cloud platform works with your software. You write some code, then push it via Git to mist-cloud, where it is packaged and deployed onto our servers (yellow path). When end users, IoT devices, or other external clients sends a request to mist-cloud the code is executed (blue path). Optionally your code can send replies back (green path), like in a server-client setup.
 
 ![Overview of how mist-cloud works](mist-cloud.png)
 
 # Install the necessary tools
 
-Currently, all administrative tasks in mist-cloud are performed through a command-line interface (CLI). We use NodeJS’s Package Manager to install the mist-CLI, so we first need to install the package manager. All code is managed with Git, which we also need to install. 
-
-## Install NodeJS
-
-1. Go to [https://nodejs.org/en/](https://nodejs.org/en/) and download the LTS version.
-2. Go through the installer.
-3. Verify the installation by opening PowerShell (or another terminal) and running the command: 
-   ```bash
-   npm --version
-   ```
-
-   > ```bash
-   > 8.18.0
-   > ```
+Currently, all administrative tasks in mist-cloud are performed through a command-line interface (CLI). We use NodeJS’s Package Manager (npm) to install the mist-CLI, and all code is managed with Git. If you do not already have npm and Git installed follow [this guide](npm_and_git.md).
 
 ## Install mist-CLI
 
@@ -62,31 +49,6 @@ Currently, all administrative tasks in mist-cloud are performed through a comman
   You need to configure the execution policy for your system, see: https:/go.microsoft.com/fwlink/?LinkID=135170
 
 </details>
-
-## Install Git
-
-1. Go to [https://git-scm.com/downloads](https://git-scm.com/downloads), and download the installer.
-2. Go through the installer.
-3. Verify the installation by opening *git bash* and running the command: 
-   ```bash
-   git --version
-   ```
-   > ```bash
-   > git version 2.37.3.windows.1
-   > ```
-
-
-> ⚠️ Because mist-cli interacts with Git, all mist-commands must be run in a terminal that can execute `git` commands. For windows users we recommend Git Bash.
-
-## Set up SSH
-
-All administrative commands are executed via a secure connection (SSH). Therefore we need to verify that we are connected directly to mist-cloud, with no one listening to the communication. To enforce this, add mist-cloud to the ‘known hosts’ with the command:
-
-```bash
-echo "api.mist-cloud.io ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOW2dgo+0nuahOzHD7XVnSdrCwhkK9wMnAZyr6XOKotO" >> ~/.ssh/known_hosts
-```
-
-To verify the connection we need to set up a new user account.
 
 # Create a user
 
@@ -237,6 +199,8 @@ Alternatively, add `write_source_code` capability to the Administrator role with
 mist capability write_source_code --role Administrator
 ```
 
+You can see an overview of all capabilities in mist-cloud [here](capabilities.md).
+
 Now, deploy the service with the command:
 
 ```bash
@@ -248,7 +212,7 @@ When we deploy a service, mist-cloud automatically creates Rivers if necessary a
 We can check the status of the smoke test with the command:
 
 ```
-mist queue 3
+mist queue
 ```
 
 And even inspect the event in detail, including its output with the command:
@@ -348,7 +312,7 @@ Whatever we put after the last  `/` is the event type, and what we put after the
 Again, we can check the status of each event with the command:
 
 ```
-mist queue 3
+mist queue
 ```
 
 And inspect a specific event in detail, including the services' output with the command:
